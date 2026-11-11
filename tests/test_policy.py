@@ -4,10 +4,10 @@
 每个测试都分三步：准备数据 → 调用门卫 → 用 assert 检查结果。
 """
 
-# 导入测试数据要用到的类型。名字太多时，用圆括号把导入分成多行写。
 # pytest 是测试工具，这里要用它的 pytest.raises（检查代码有没有抛出指定的异常）。
 import pytest
 
+# 导入测试数据要用到的类型。名字太多时，用圆括号把导入分成多行写。
 from app.domain.models import (
     AclEntry,
     Action,
