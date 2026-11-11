@@ -90,6 +90,13 @@ B_CAN_READ = AclEntry(
     resource_id="cand-1",
     action=Action.READ_RESUME,
 )
+# 给管理员的授权
+ADMIN_CAN_READ = AclEntry(
+    tenant_id="tenant-1",
+    subject_id="admin-1",
+    resource_id="cand-1",
+    action=Action.READ_RESUME,
+)
 # 属于另一家公司的授权：员工、候选人、动作都对得上（两家公司可能各有一个 user-a）。
 A_CAN_READ_IN_TENANT_2 = AclEntry(
     tenant_id="tenant-2",
@@ -125,6 +132,9 @@ DECISION_CASES = [
     pytest.param(EMPLOYEE_A, CANDIDATE_1, CONSENT_WITHDRAWN, [A_CAN_READ], Reason.CONSENT_WITHDRAWN, id="rda_005_withdrawn_consent_is_denied"),
     # RDA-006：管理员没有自己的授权 → 拒绝，管理员没有例外。
     pytest.param(ADMIN, CANDIDATE_1, CONSENT_1, [A_CAN_READ], Reason.NO_GRANT, id="rda_006_admin_without_own_grant_is_denied"),
+    # RDA-006 的另一半：管理员有自己的授权、同意书有效 → 放行。
+    # 管理员和普通员工一样，能不能看由自己的授权记录决定。
+    pytest.param(ADMIN,CANDIDATE_1,CONSENT_1,[ADMIN_CAN_READ],Reason.ALLOWED,id="rda_006_admin_with_own_grant_is_allowed"),
     # 授权列表是空的 → 拒绝。同意书传 None：如果门卫没有先查授权，就会返回 NO_CONSENT。
     pytest.param(EMPLOYEE_A, CANDIDATE_1, None, [], Reason.NO_GRANT, id="no_grant_is_denied"),
     # 甲的授权排在第二条：门卫必须把列表看完，不能只看第一条就下结论。
