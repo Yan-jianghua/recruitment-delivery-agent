@@ -2,4 +2,7 @@ fastapi==0.162.2
 uvicorn==0.54.0
 pytest==9.2.0
 httpx==0.28.1
+
+#开发时所用工具不需要部署Docker
 Ruff ==0.17.4
+mypy == 2.4.1
