@@ -7,13 +7,13 @@
 - 当前岗位：产品与技术负责人。
 - 操作者：开发者亲手操作，导师讲解和核验。
 - 起点：main，提交 d8c58ba。
-- 任务分支：feat/rda-b0-001-security-foundation（用于第一次合并）。
+- 任务分支：feat/rda-b0-001-resume-api（用于第二次合并，从 main 9d7fad5 创建）。第一次合并用的 feat/rda-b0-001-security-foundation 已在合并后删除。
 - 任务卡：docs/09_今日任务-2026-11-08.md。
 - 前项完成证据：RDA-B0-000 规划基线已通过 PR #2 合并。
-- 当前交付：门卫规则、测试与代码检查工具已提交并推送（代码最后改动于 bd70f62，14 passed），RDA-001~006 已有测试输出；第一次合并的 PR 从本分支发起。RDA-007、RDA-008 和数据库迁移待完成。
+- 当前交付：第一次合并已完成（3 号 PR，main 9d7fad5，14 passed），RDA-001~006 已有测试输出。第二次合并进行中：查看简历接口与 RDA-007。RDA-008 和数据库迁移待完成。
 - 合并计划（2026-11-11 决定）：本任务分三次合并到 main，每次单独验收。
-  1. 门卫规则、测试与代码检查工具（RDA-001~006）：第 2 课（Ruff、mypy、参数化测试）完成后，从本分支开 PR。
-  2. 查看简历接口与 RDA-007：从合并后的 main 新开分支。
+  1. 门卫规则、测试与代码检查工具（RDA-001~006）：已完成。3 号 PR 于 2026-11-11 以 squash 方式合并，main 提交为 9d7fad5。
+  2. 查看简历接口与 RDA-007：进行中，分支 feat/rda-b0-001-resume-api。
   3. 数据持久化、数据库迁移与 RDA-008：再从 main 新开分支。
 - 完成条件：三次合并全部完成后，8 个安全用例都有实际测试输出，代码和迁移可运行。
 
@@ -176,7 +176,26 @@ PR #1 已合并，main 提交为 263591a。
 - 导师应要求完成：
   - 讲解中的示范代码，以及参数化后的 test_policy.py 全文。都先在临时副本中验证，再交给开发者替换。
   - 核验每次提交、推送和检查输出。
-- 第一次合并：从本分支向 main 发起 PR，合并结果待记录。
+- 第一次合并：3 号 PR 已合并，见下方的第一次合并记录。
+
+## RDA-B0-001 第一次合并记录（2026-11-11）
+
+- 3 号 PR：feat/rda-b0-001-security-foundation → main，共 13 个提交，以 squash 方式合并。main 提交为 9d7fad5，它的父提交是 d8c58ba。
+- 核验：
+  - main 新提交的 tree（ac47b92）和审查过的分支最后一个提交 c06946f 的 tree 相同，内容一致。
+  - 在合并后的 main 上运行四项检查：14 passed；ruff check、ruff format --check、mypy 都通过。
+  - 仓库没有 CI，以上都是本地运行结果。
+- 选择 squash 的理由：
+  - 和 1、2 号 PR 的做法一致。
+  - 默认标题里没有账号名。
+  - 分支上的提交仍可在 3 号 PR 的 Commits 页查到，本文件里引用的 d0d0657 到 c06946f 等哈希都在那里。
+- 合并后误点了 Revert 按钮，GitHub 因此生成了撤销分支 revert-3-feat/rda-b0-001-security-foundation。这个分支没有开 PR，main 没受影响，分支已删除。
+- 清理：
+  - GitHub 上的功能分支和撤销分支都已删除。
+  - 本地功能分支已删除。squash 合并后要用 `git branch -D` 删除，删除前先确认 `git diff main <功能分支>` 没有输出。
+  - `git fetch --prune` 清掉了 origin/docs/RAG-B0-001-scope 这条旧记录。
+- 清理后核验：本地 main、origin/main 和 GitHub 上的 main 都是 9d7fad5，GitHub 上只剩 main 一个分支。
+- 第二次合并：2026-11-12 从 main 9d7fad5 创建分支 feat/rda-b0-001-resume-api。
 
 ## 教学说明规则
 
