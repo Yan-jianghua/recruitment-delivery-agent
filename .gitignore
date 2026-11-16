@@ -24,3 +24,4 @@ __pycache__/
 *.log
 .claude/
 .mypy_cache/
+local/demo_tokens.json
