@@ -45,7 +45,7 @@ def test_request_without_valid_token_is_401(
     assert response.json() == {"detail": "Not authenticated"}
 
 
-def test_request_without_valid_token_its_identity(client: TestClient) -> None:
+def test_valid_token_returns_its_identity(client: TestClient) -> None:
     response = client.get(
         "/api/v1/me", headers={"Authorization": "Bearer test-token-a"}
     )
@@ -57,7 +57,7 @@ def test_request_without_valid_token_its_identity(client: TestClient) -> None:
     }
 
 
-def test_demo_auth_is_off_without_evn_var(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_demo_auth_is_off_without_env_var(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv(TOKENS_FILE_ENV, raising=False)
     assert get_token_table() == {}
 

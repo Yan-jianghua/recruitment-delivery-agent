@@ -25,3 +25,4 @@ __pycache__/
 .claude/
 .mypy_cache/
 local/demo_tokens.json
+pytest-of-*/
