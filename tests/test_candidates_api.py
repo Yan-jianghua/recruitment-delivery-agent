@@ -90,3 +90,42 @@ def test_request_without_token_is_401(client: TestClient) -> None:
     # 不带令牌：还没轮到门卫，认证这一关就拦下了。
     response = client.get(resume_url("cand-1"))
     assert response.status_code == 401
+
+
+# ===== RDA-007：请求里自己填的身份，改变不了服务器认定的身份 =====
+# 员工甲在请求里谎称自己是别家公司（tenant-2）的人、是管理员 admin-1，
+# 想借此看到别家公司那份 cand-1 的简历。
+FORGED_IDENTITY = {"tenant_id": "tenant-2", "user_id": "admin-1"}
+
+# 同样的谎话放进请求头。令牌照常带上，否则认证这一关就直接返回 401 了。
+FORGED_HEADERS = {
+    "Authorization": "Bearer test-token-a",
+    "X-Tenant-Id": "tenant-2",
+    "X-User-Id": "admin-1",
+}
+
+# 每一行是一种冒充办法：pytest.param(查询参数, 请求头, 请求体, id=场景名字)。
+# None 表示这个位置什么都不放。
+FORGERY_CASES = [
+    pytest.param(FORGED_IDENTITY, EMPLOYEE_A_HEADERS, None, id="rda_007_query_params"),
+    pytest.param(None, FORGED_HEADERS, None, id="rda_007_headers"),
+    pytest.param(None, EMPLOYEE_A_HEADERS, FORGED_IDENTITY, id="rda_007_json_body"),
+]
+
+
+@pytest.mark.parametrize(("params", "headers", "body"), FORGERY_CASES)
+def test_forged_identity_in_request_is_ignored(
+    client: TestClient,
+    params: dict[str, str] | None,
+    headers: dict[str, str],
+    body: dict[str, str] | None,
+) -> None:
+    # 基准：员工甲正常地看 cand-1，看到的是自己公司小王的简历。
+    normal = client.get(resume_url("cand-1"), headers=EMPLOYEE_A_HEADERS)
+    # client.get 不能带请求体，所以改用通用的 client.request，第一个参数写请求方法。
+    forged = client.request(
+        "GET", resume_url("cand-1"), params=params, headers=headers, json=body
+    )
+    # 撒了谎，结果也必须和基准一模一样：服务器只认令牌，不认请求里自己填的身份。
+    assert forged.status_code == normal.status_code == 200
+    assert forged.json() == normal.json()
