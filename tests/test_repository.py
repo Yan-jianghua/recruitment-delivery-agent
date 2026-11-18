@@ -12,7 +12,7 @@ from app.repository import DEMO_REPOSITORY
 
 
 def test_get_candidate_returns_the_one_in_the_given_tenant() -> None:
-    assert DEMO_REPOSITORY.get_candidates("tenant-1", "cand-1") == Candidate(
+    assert DEMO_REPOSITORY.get_candidate("tenant-1", "cand-1") == Candidate(
         "cand-1", "tenant-1", "project-1"
     )
 
@@ -26,7 +26,7 @@ MISSING_CANDIDATES = [
 
 @pytest.mark.parametrize(("tenant_id", "candidate_id"), MISSING_CANDIDATES)
 def test_get_candidate_returns_none_when_not_found(tenant_id, candidate_id) -> None:
-    assert DEMO_REPOSITORY.get_candidates(tenant_id, candidate_id) is None
+    assert DEMO_REPOSITORY.get_candidate(tenant_id, candidate_id) is None
 
 
 def test_get_resume_returns_the_one_is_in_the_given_tenant() -> None:

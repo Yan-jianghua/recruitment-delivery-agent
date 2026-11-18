@@ -24,7 +24,7 @@ class MeResponse(BaseModel):
 def read_me(
     principal: Annotated[Principal, Depends(get_current_principal)],
 ) -> MeResponse:
-    """返回服务器认出当前用户，前端可以用它心事当前登录的是谁"""
+    """返回服务器认出当前用户，前端可以用它显示当前登录的是谁"""
     return MeResponse(
         user_id=principal.user_id, tenant_id=principal.tenant_id, role=principal.role
     )

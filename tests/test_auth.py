@@ -1,6 +1,5 @@
 """认证(app/auth.py)的测试: 接口怎样凭令牌认出当前用户"""
 
-from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
@@ -9,7 +8,6 @@ from pydantic import ValidationError
 
 from app.auth import TOKENS_FILE_ENV, get_token_table, load_token_table
 from app.domain.models import Principal, Role
-from app.main import app
 
 EMPLOYEE_A = Principal(
     user_id="user-a",
@@ -17,15 +15,6 @@ EMPLOYEE_A = Principal(
     role=Role.RECRUITER,
     project_ids=frozenset(["project-1"]),
 )
-
-TEST_TOKEN_TABLE = {"test-token-a": EMPLOYEE_A}
-
-
-@pytest.fixture
-def client() -> Iterator[TestClient]:
-    app.dependency_overrides[get_token_table] = lambda: TEST_TOKEN_TABLE
-    yield TestClient(app)
-    app.dependency_overrides.pop(get_token_table, None)
 
 
 UNAUTHENTICATED_CASES = [

@@ -1,8 +1,8 @@
 """内存数据仓库：把“查数据”的代码包在一个类里。
 接口只调用仓库的方法拿数据，不关心数据存在哪里。现在
 数据放在内存里的列表中；
-后面换成数据库，只要新参何苦提供同样的方法，接口代码一行都不用改。
-每个查询都要带上呢个tenant_id ：两家公司可能各有一个编号叫cand-1的候选人
+后面换成数据库，只要新仓库提供同样的方法，接口代码一行都不用改。
+每个查询都要带上这个 tenant_id：两家公司可能各有一个编号叫cand-1的候选人
 """
 
 from dataclasses import dataclass
@@ -19,7 +19,7 @@ from app.domain.models import (
 
 @dataclass
 class InMemoryRepository:
-    """把数据放在内存列表里的仓库。服务重启后，数据回恢复成下面
+    """把数据放在内存列表里的仓库。服务重启后，数据会恢复成下面
     的演示数据"""
 
     candidates: list[Candidate]
@@ -27,7 +27,7 @@ class InMemoryRepository:
     consents: list[ConsentRecord]
     acl_entries: list[AclEntry]
 
-    def get_candidates(self, tenant_id: str, candidate_id: str) -> Candidate | None:
+    def get_candidate(self, tenant_id: str, candidate_id: str) -> Candidate | None:
         """按公司和编号找候选人。找不到就返回None"""
         for candidate in self.candidates:
             if (
@@ -51,9 +51,7 @@ class InMemoryRepository:
                 return consent
         return None
 
-    def list_acl_entries(
-        self, tenant_id: str, candidate_id: str
-    ) -> list[AclEntry] | None:
+    def list_acl_entries(self, tenant_id: str, candidate_id: str) -> list[AclEntry]:
         """找出这家公司里、和这个候选人有关的全部授权记录。一条都没有就返回空列表。"""
         result: list[AclEntry] = []
         for entry in self.acl_entries:
@@ -120,5 +118,5 @@ DEMO_REPOSITORY = InMemoryRepository(
 def get_repository() -> InMemoryRepository:
     """依赖:接口要查数据时，就声明依赖它
     测试时可以用 dependency_overrides 换成别的仓库；W8
-    换成数据仓库时，也只改这里"""
+    换成数据库仓库时，也只改这里"""
     return DEMO_REPOSITORY
