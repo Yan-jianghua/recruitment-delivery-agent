@@ -117,3 +117,12 @@ class Decision:
 
     allowed: bool  # 是否允许
     reason: Reason  # 原因
+
+
+@dataclass(frozen=True)
+class Resume:
+    """候选人的简历正文。只有门卫放行以后，接口才会读取并返回"""
+
+    candidate_id: str
+    tenant_id: str
+    content: str

@@ -1,4 +1,6 @@
 fastapi==0.162.2
+# 认证模块直接使用 Pydantic，记录当前已经安装的版本。
+pydantic==2.14.3
 uvicorn==0.54.0
 pytest==9.2.0
 httpx==0.28.1

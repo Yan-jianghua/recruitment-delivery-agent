@@ -8,8 +8,17 @@
 # 还会生成接口文档（服务启动后访问 /docs 就能看到）。
 from fastapi import FastAPI
 
+# 我们自己的代码：app/api/me.py 这个模块，里面的接口登记在 me.router 上。
+from app.api import candidates, me
+
 # 调用 FastAPI 类，创建应用对象，存进变量 app。title 是接口文档页面上显示的标题。
 app = FastAPI(title="recruitment Delivery Agent")
+
+# include_router：把 me.py 里登记的接口挂到 app 上；
+# prefix="/api/v1"：给这些接口的网址统一加上前缀，/me 就变成了 /api/v1/me。
+app.include_router(me.router, prefix="/api/v1")
+
+app.include_router(candidates.router, prefix="/api/v1")
 
 
 # @app.get("/health") 是装饰器：把紧挨着的下一个函数登记成"GET /health"接口。
