@@ -10,10 +10,10 @@
 - 任务分支：feat/rda-b0-001-resume-api（用于第二次合并，从 main 9d7fad5 创建）。第一次合并用的 feat/rda-b0-001-security-foundation 已在合并后删除。
 - 任务卡：docs/09_今日任务-2026-11-08.md。
 - 前项完成证据：RDA-B0-000 规划基线已通过 PR #2 合并。
-- 当前交付：第一次合并已完成（3 号 PR，main 9d7fad5，14 passed），RDA-001~006 已有测试输出。第二次合并进行中：查看简历接口与 RDA-007。RDA-008 和数据库迁移待完成。
+- 当前交付：第一次合并已完成（3 号 PR，main 9d7fad5，14 passed）。第二次合并的内容已完成：查看简历接口、RDA-007 测试和 CI（5533bb0，46 passed，CI 通过），RDA-001~007 已有测试输出，等待 PR 合并。RDA-008 和数据库迁移待完成。
 - 合并计划（2026-11-11 决定）：本任务分三次合并到 main，每次单独验收。
   1. 门卫规则、测试与代码检查工具（RDA-001~006）：已完成。3 号 PR 于 2026-11-11 以 squash 方式合并，main 提交为 9d7fad5。
-  2. 查看简历接口与 RDA-007：进行中，分支 feat/rda-b0-001-resume-api。
+  2. 查看简历接口、RDA-007 与 CI：开发完成，等待 PR 合并，分支 feat/rda-b0-001-resume-api。
   3. 数据持久化、数据库迁移与 RDA-008：再从 main 新开分支。
 - 完成条件：三次合并全部完成后，8 个安全用例都有实际测试输出，代码和迁移可运行。
 
@@ -196,6 +196,46 @@ PR #1 已合并，main 提交为 263591a。
   - `git fetch --prune` 清掉了 origin/docs/RAG-B0-001-scope 这条旧记录。
 - 清理后核验：本地 main、origin/main 和 GitHub 上的 main 都是 9d7fad5，GitHub 上只剩 main 一个分支。
 - 第二次合并：2026-11-12 从 main 9d7fad5 创建分支 feat/rda-b0-001-resume-api。
+
+## RDA-B0-001 进度记录（2026-11-19，第 3 课）
+
+- 第 3 课内容（W1～W4）：HTTP 的 Bearer 令牌认证和 401；FastAPI 的依赖注入（Depends、dependency_overrides）和 APIRouter；pytest 的 fixture、monkeypatch、tmp_path 和 conftest.py；仓库模式；200、403、404 的状态码设计；伪造身份测试；GitHub Actions 持续集成和 YAML。
+- 提交（分支 feat/rda-b0-001-resume-api，共 13 个，均已推送，已用 gh 核对远程分支头）：
+  - de4844f：记录第一次合并结果，开始第二次合并。
+  - 85863ee：逐日计划，元旦前完成，留 7 天空档。
+  - 47fd95d：演示令牌认证和 /api/v1/me。只提交了 app/auth.py 和一个空的 tests/test_auth.py，其余文件漏了。
+  - ed88fd9：11-16 的学习笔记。
+  - b43ce21：补上 47fd95d 漏掉的 /api/v1/me、认证测试和配置。没有改写历史，用新提交补上。
+  - adf07ad：删除 11-16 的学习笔记，开发者有意删除。
+  - a328631：改正两个测试函数名，在 .gitignore 里忽略 pytest 临时文件夹。同时带进了空的 app/api/__init__.py 和 app/api/me.py。
+  - 9a8551c：用 APIRouter 把 /api/v1/me 拆到 app/api/me.py。
+  - 6a8ae96：内存数据仓库和演示数据。
+  - 69b6caf：查看简历接口 GET /api/v1/candidates/{candidate_id}/resume。
+  - 7381407：RDA-007 伪造身份测试。
+  - 8c2e27e：GitHub Actions 持续集成。提交进去的 ci.yml 是空文件，GitHub 运行 44443043878 失败（workflow file issue，没有运行任何任务）。
+  - 5533bb0：补上 ci.yml 的内容，GitHub 运行 44444791053 全部通过。
+- 检查结果：
+  - CI（5533bb0，GitHub 运行 44444791053，Ubuntu，Python 3.12.16）：pytest 46 passed，1 个 warning 同前；ruff check：All checks passed!；ruff format --check：34 files already formatted；mypy app tests：Success: no issues found in 17 source files。
+  - 本地（7381407，之后只改了 ci.yml）：结果相同。在只按 requirements.txt 新建的虚拟环境里也全部通过，说明依赖写全了。
+- 测试结构（46 个）：
+  - test_health.py 1 个，test_policy.py 13 个，test_auth.py 7 个，test_repository.py 7 个，test_candidates_api.py 18 个。
+  - 接口测试：只返回授权字段 1 个；STATUS_CASES 9 个场景（RDA-001～006、没有授权、查无此人）；别家公司与不存在的候选人的 404 完全相同 1 个；四种拒绝的 403 完全相同 3 个；不带令牌返回 401 1 个；RDA-007 的三种伪造方式（查询参数、请求头、请求体）3 个。
+  - client fixture 和测试令牌表放在 tests/conftest.py，多个测试文件共用。
+- 变异测试（在临时副本中进行，46 个测试）：
+  - 接口相信查询参数里的 tenant_id、请求头 X-Tenant-Id、请求体里的 tenant_id、查询参数里的 user_id：每种只有对应的 RDA-007 场景失败（assert 403 == 200）。
+  - 403 改成 404：8 个失败。跳过放行检查：8 个失败。响应多一个字段：1 个失败。403 的提示里写进具体原因：3 个失败，只有"四种拒绝完全相同"的测试能发现。
+  - 去掉接口里的 NOT_FOUND 分支：现有测试发现不了。仓库查询已经按公司过滤，这个分支是安全兜底，以后用故意出错的仓库来测。
+- 开发者亲手完成：
+  - 照讲解写出认证、路由拆分、内存仓库、查看简历接口和 RDA-007 测试，运行四项检查，完成以上 13 个提交和推送。
+  - 新建 ci.yml，在 GitHub 的 Actions 页面查看运行结果。
+- 导师应要求完成：
+  - 讲解中的示范代码和测试代码，都先在临时副本中验证，再交给开发者。
+  - 块 3 中按开发者的要求直接修改了 4 个文件：改正打错的令牌名、状态码名和方法名，补回被误删的一行，改用 fastapi 的 Depends 导入，改正注释错字，并加上"四种拒绝完全相同"的测试。
+  - 核验每次提交、推送、检查输出和 CI 运行。
+- 教训：
+  - PyCharm 新建文件时会自动把空文件加入暂存区，47fd95d、a328631、8c2e27e 都因此带进了空文件。提交前看 `git status -s` 的第二列是否为空，新文件再用 `git diff --cached --stat` 看行数。
+  - 手打的字符串和名字容易出错（例如 test-token-admain、HTTP_404_NOT_FOUN），每次提交前先跑测试。
+- 第二次合并：合并后，在下一个分支的第一个提交里写第二次合并记录，做法和第一次合并相同。
 
 ## 教学说明规则
 
