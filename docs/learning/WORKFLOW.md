@@ -7,14 +7,14 @@
 - 当前岗位：产品与技术负责人。
 - 操作者：开发者亲手操作，导师讲解和核验。
 - 起点：main，提交 d8c58ba。
-- 任务分支：feat/rda-b0-001-resume-api（用于第二次合并，从 main 9d7fad5 创建）。第一次合并用的 feat/rda-b0-001-security-foundation 已在合并后删除。
+- 任务分支：feat/rda-b0-001-persistence（用于第三次合并，从 main 88c873a 创建）。前两次合并用的 feat/rda-b0-001-security-foundation 和 feat/rda-b0-001-resume-api 都已在合并后删除。
 - 任务卡：docs/09_今日任务-2026-11-08.md。
 - 前项完成证据：RDA-B0-000 规划基线已通过 PR #2 合并。
-- 当前交付：第一次合并已完成（3 号 PR，main 9d7fad5，14 passed）。第二次合并的内容已完成：查看简历接口、RDA-007 测试和 CI（5533bb0，46 passed，CI 通过），RDA-001~007 已有测试输出，等待 PR 合并。RDA-008 和数据库迁移待完成。
+- 当前交付：第一次合并已完成（3 号 PR，main 9d7fad5，14 passed）。第二次合并已完成（4 号 PR，main 88c873a，46 passed，CI 通过），RDA-001~007 已有测试输出。第三次合并进行中：Docker 与 PostgreSQL、数据持久化、数据库迁移和 RDA-008。
 - 合并计划（2026-11-11 决定）：本任务分三次合并到 main，每次单独验收。
   1. 门卫规则、测试与代码检查工具（RDA-001~006）：已完成。3 号 PR 于 2026-11-11 以 squash 方式合并，main 提交为 9d7fad5。
-  2. 查看简历接口、RDA-007 与 CI：开发完成，等待 PR 合并，分支 feat/rda-b0-001-resume-api。
-  3. 数据持久化、数据库迁移与 RDA-008：再从 main 新开分支。
+  2. 查看简历接口、RDA-007 与 CI：已完成。4 号 PR 于 2026-11-19 以 squash 方式合并，main 提交为 88c873a。  3. 数据持久化、数据库迁移与 RDA-008：再从 main 新开分支。
+  3. 数据持久化、数据库迁移与 RDA-008：进行中，分支 feat/rda-b0-001-persistence。
 - 完成条件：三次合并全部完成后，8 个安全用例都有实际测试输出，代码和迁移可运行。
 
 ## 项目启动时的检查快照
@@ -235,7 +235,26 @@ PR #1 已合并，main 提交为 263591a。
 - 教训：
   - PyCharm 新建文件时会自动把空文件加入暂存区，47fd95d、a328631、8c2e27e 都因此带进了空文件。提交前看 `git status -s` 的第二列是否为空，新文件再用 `git diff --cached --stat` 看行数。
   - 手打的字符串和名字容易出错（例如 test-token-admain、HTTP_404_NOT_FOUN），每次提交前先跑测试。
-- 第二次合并：合并后，在下一个分支的第一个提交里写第二次合并记录，做法和第一次合并相同。
+  - 第二次合并：4 号 PR 已合并，见下方的第二次合并记录。
+
+## RDA-B0-001 第二次合并记录（2026-11-19）
+
+- 4 号 PR：feat/rda-b0-001-resume-api → main，共 14 个提交，以 squash 方式合并。main 提交为 88c873a，它的父提交是 9d7fad5。
+- 核验：
+  - main 新提交的 tree（1c6278f）和审查过的分支最后一个提交 d42b779 的 tree 相同，内容一致。
+  - 4 号 PR 页面上的 CI 检查通过。
+  - 合并后 main 上的 CI（GitHub 运行 44447134060）通过：pytest 46 passed；ruff check、ruff format --check（34 files）、mypy（17 source files）都通过。第一次合并时仓库还没有 CI，这是第一次用 CI 的结果核验合并。
+  - 工作流文件进入 main 之后，GitHub 显示的工作流名字才从文件路径变成 CI。
+- 选择 squash 的理由：
+  - 和 1～3 号 PR 一致，main 上一次合并只留一个提交。
+  - 分支上的 14 个提交仍可在 4 号 PR 的 Commits 页查到，本文件里引用的 de4844f 到 d42b779 等哈希都在那里。
+- 清理：
+  - GitHub 上的功能分支已删除。
+  - 本地功能分支已删除。squash 合并后用 `git branch -D` 删除；内容一致已由上面的 tree 比较证明。
+  - origin/feat/rda-b0-001-resume-api 这条本地记录已清掉。
+  - 已清掉一条失效的工作树记录，并删除了对应的本地分支 claude/compare-rank-four-projects-c19d02，它和 9d7fad5 是同一个提交。
+- 清理后核验：本地 main、origin/main 和 GitHub 上的 main 都是 88c873a，GitHub 上只剩 main 一个分支。
+- 第三次合并：2026-11-19 从 main 88c873a 创建分支 feat/rda-b0-001-persistence。
 
 ## 教学说明规则
 
